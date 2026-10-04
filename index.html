@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ルーレット</title><style>
+:root{--bg:#e9efe6;--fg:#3b4a4f;--dim:#8a9a9e;--ln:#d3ddd7;--ring:#fff;--card:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-d]{--bg:#2b3a3f;--fg:#eaf2ee;--dim:#8fa3a8;--ln:#4a5d62;--ring:#f3f7f4;--card:#374a50}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font:16px sans-serif}
+#app{height:100%;max-width:480px;margin:auto;display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--bg)}
+hr{width:100%;border:0;border-top:1px solid var(--ln);margin:6px 0}
+button{font:inherit;color:var(--fg);background:none;border:1px solid var(--ln);border-radius:8px;padding:6px 10px}
+button:disabled{color:var(--dim)}.go{background:#3498db;color:#fff;border:0}.red{background:#e74c3c!important;color:#fff!important}
+.hd,.bar,.ft,.r,.tb{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 12px}
+.hd b{font-size:20px}.dim{color:var(--dim)}.st{display:flex;align-items:center;gap:8px}
+.ls,.grid{flex:1;overflow:auto}.wc{flex:1;display:flex;align-items:center;justify-content:center;padding-bottom:6vh}
+svg{width:min(88%,340px)}.res{text-align:center;min-height:2.4em;font-weight:bold;padding:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;align-content:start}.cd{border:1px solid var(--ln);border-radius:10px;padding:6px;text-align:center}.cd svg{width:100%}
+.row{position:relative;overflow:hidden;border-bottom:1px solid var(--ln);touch-action:pan-y}
+.ct{position:relative;background:var(--bg);padding:12px;transition:transform .2s;display:flex;align-items:center;gap:6px}
+.ac{position:absolute;top:0;bottom:0;display:flex;align-items:center}.a-l{right:0}.a-r{left:0}
+.ac button{height:100%;border:0;border-radius:0;background:#3498db;color:#fff;min-width:50px;padding:0 4px}
+.row[data-s=l] .ct{transform:translateX(calc(-1*var(--lw,128px)))}.row[data-s=r] .ct{transform:translateX(var(--rw,64px))}
+.row[data-s=r] .a-l,.row[data-s=l] .a-r,.row:not([data-s]) .ac,.row[data-s=''] .ac{visibility:hidden}
+.bd{position:absolute;inset:0;background:#0006;z-index:5}.dw{width:60%;height:100%;background:var(--bg);display:flex;flex-direction:column;padding:8px;box-sizing:border-box;font-size:13px}
+.il{flex:1;overflow:auto}.df{display:flex;justify-content:space-between;padding-top:6px}.mi{padding:8px 2px}
+.m{position:absolute;inset:0;background:#0006;z-index:9;display:flex;align-items:center;justify-content:center}
+.bx{background:var(--bg);border-radius:16px;padding:16px;width:78%;box-sizing:border-box}.m.f{background:var(--bg);flex-direction:column;align-items:stretch;justify-content:flex-start}.m.f .bx{width:auto;border-radius:0;flex:1;overflow:auto;padding:10px 12px;background:var(--bg)}.gc{border:1px solid var(--ln);border-radius:12px;padding:12px 14px;margin-bottom:10px}.gc b{font-size:17px}.gc div{color:var(--dim);font-size:13px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fb{padding:10px 12px;border-top:1px solid var(--ln)}.fb button{width:100%}
+.bx input[type=text],textarea{width:100%;box-sizing:border-box;font:inherit;margin:8px 0;background:var(--bg);color:var(--fg);border:1px solid var(--ln);border-radius:8px;padding:8px}
+.bt{display:flex;justify-content:space-between;margin-top:8px}small{color:var(--dim)}
+textarea{flex:1;margin:8px 12px;width:auto;resize:none}.tb{flex-wrap:wrap}.hl{display:flex;gap:8px;padding:6px 14px}
+input.cl{width:22px;height:22px;border:0;padding:0;border-radius:50%;background:none}input.cl::-webkit-color-swatch-wrapper{padding:0}input.cl::-webkit-color-swatch{border:0;border-radius:50%}
+.tt{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#000c;color:#fff;padding:8px 14px;border-radius:20px;z-index:20}
+.sp2{display:flex;align-items:center;gap:4px;height:100%;padding:0 6px;background:var(--bg);border-left:1px solid var(--ln);box-sizing:border-box}
+.sp2 button{height:auto;min-width:26px;width:26px;padding:2px 0;border:1px solid var(--ln);border-radius:6px;background:none;color:var(--fg)}.sp2 b{min-width:18px;text-align:center}
+.go{padding:10px 26px;border-radius:12px;font-weight:bold}.ft{padding:10px 16px}.st button{width:38px;padding:6px 0}.ct{padding:15px 14px}
+.hd{padding:10px 14px}.hd button,.bar button{padding:8px 14px}.r{border-bottom:1px solid var(--ln);padding:10px 14px}.tb button{flex:1;padding:8px 2px;font-size:13px}.mi{padding:10px 4px}
+.res{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;position:relative;min-height:3.4em;padding:8px}
+.chip{padding:8px 20px;border-radius:999px;color:#fff;font-size:22px;font-weight:bold;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+.r .chip{font-size:15px;padding:3px 12px}.r[id^=res]{justify-content:flex-start!important}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+i.cf{position:absolute;top:0;width:8px;height:8px;border-radius:2px;animation:fall 1.4s ease-out forwards;pointer-events:none}
+@keyframes fall{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--dx),var(--dy,80px)) rotate(360deg);opacity:0}}
+button{white-space:nowrap}.bar,.hd{flex-wrap:nowrap}.bar span{font-size:14px;white-space:nowrap}.bar button{padding:8px 10px;font-size:14px}.bar .go{padding:8px 14px}.tb{flex-wrap:nowrap;gap:4px;padding:6px 8px}.tb button{font-size:12px;padding:8px 0;min-width:0}
+button[data-a=hok],button[data-a=svr],button[data-a=sg],button[data-a=gs],button[data-a=msave]{background:#e74c3c;color:#fff;border:0}
+button[data-a=svr]:disabled{background:none;border:1px solid var(--ln);color:var(--dim)}
+.ew{position:relative;flex:1;margin:8px 12px;border:1px solid var(--ln);border-radius:8px;overflow:hidden}
+#bk,#ta{position:absolute;inset:0;margin:0!important;padding:8px;border:0!important;font:16px/1.4 sans-serif;white-space:pre;box-sizing:border-box;width:100%;height:100%}
+#bk{overflow:hidden;pointer-events:none;color:var(--fg)}#bk div{min-height:1.4em}
+#ta{background:transparent!important;color:transparent!important;-webkit-text-fill-color:transparent;caret-color:var(--fg);resize:none;overflow:auto;outline:none}
+.ls.fr{margin:8px 12px;border:1px solid var(--ln);border-radius:8px}.eye{font-size:12px;padding:3px 10px;border-radius:999px}
+.go{background:#23b4c4!important}
+button[data-a=menu],button[data-a=tomulti]{width:44px;height:44px;border-radius:50%;border:0;background:#9e9e9e;color:#fff;font-size:20px;padding:0}button[data-a=tomulti]{background:#23b4c4}
+
+#app::before{content:'';flex:none;height:5px;background:linear-gradient(90deg,#ef6f6c 50%,#1fb5c5 50%)}
+hr{border-top-color:var(--ln)}
+button{background:var(--card);border:0;border-radius:999px;color:var(--fg)}
+.hd b{color:#1fb5c5;font-size:22px;letter-spacing:.5px}
+.go,button[data-a=add]{background:#1fb5c5!important;color:#fff!important}
+button[data-a=add]{width:44px;height:44px;border-radius:50%;font-size:22px;padding:0}
+button[data-a=back],button[data-a=cl],button[data-a=srt],button[data-a=gsrt],button[data-a=mm]{background:#a9b3b0;color:#fff}
+.hd button[data-a=home]{background:#1fb5c5;color:#fff}
+button[data-a=hok],button[data-a=svr],button[data-a=sg],button[data-a=gs],button[data-a=msave]{background:#ef6f6c}
+button[data-a=svr]:disabled{background:var(--card);color:var(--dim)}
+.st button,.sp2 button{border-radius:50%;background:var(--card);border:1px solid var(--ln)}
+.row{margin:6px 12px;border:0;border-radius:14px;background:var(--card)}.ct{background:var(--card)!important;border-radius:14px}
+.ac button{border-radius:0}.sp2{background:var(--card)}
+.r{background:var(--card);border:0;border-radius:14px;margin:6px 12px;padding:10px 14px}
+.cd{background:var(--card);border:0;border-radius:18px}.ew,.ls.fr{background:var(--card);border:0;border-radius:14px}
+.bx,.dw{background:var(--card)}.bx{border-radius:22px}.m.f .bx,.m.f{background:var(--bg)}.gc{background:var(--card);border:0;border-radius:16px}
+.bx input[type=text]{background:var(--bg);border:0;border-radius:12px}
+.tb button{background:var(--card)}.tb button[data-a=sg]{background:#ef6f6c}
+.bar span{color:var(--fg)}
+.r[id^=res]{background:none;margin:0;padding:2px 14px;border-radius:0}
+.cd{background:var(--bg)!important;border:2px solid var(--card)!important}
+.sw{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}.swb{width:100%;aspect-ratio:1;border-radius:50%;border:0;padding:0}.swb.on{outline:3px solid var(--fg);outline-offset:2px}
+button.cl{width:22px;height:22px;min-width:22px;flex:none;padding:0;border:0;border-radius:50%}
+.res{max-height:26vh;overflow-y:auto}
+.mid{flex:1;align-self:stretch;min-height:44px}.sec{cursor:pointer}.g line,.g circle:not(.sec),.g text{pointer-events:none}
+button.hb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}.hb i{display:block;width:20px;height:3px;border-radius:2px;background:#fff;transition:transform .25s}
+.hb.b1 i:nth-child(3){transform:translateY(1px)}.hb.b1.r1 i:nth-child(3){transform:translate(1px,1px)}.hb.m1 i:nth-child(2){transform:translateY(-1px)}.hb.m2 i:nth-child(2){transform:translateY(1px)}.hb.t1 i:nth-child(1){transform:translateY(-1px)}.hb.l1 i:nth-child(1){transform:translateX(-1px)}.hb.t1.l1 i:nth-child(1){transform:translate(-1px,-1px)}
+.dh{margin-left:auto;padding:0 4px 0 16px;font-size:26px;color:var(--dim);touch-action:none;cursor:grab}.hd b[data-a=ttl]{display:inline-block;padding:8px 0}
+.mn{padding:0 0 8px}.cd2{background:var(--card);border-radius:16px;padding:12px 14px;margin:8px 12px;font-size:14px;line-height:1.6}.cd2 h3{margin:0 0 6px;font-size:16px;color:#1fb5c5}.cd2 table{width:100%;font-size:13px;border-collapse:collapse}.cd2 td,.cd2 th{padding:4px 6px;text-align:left;border-bottom:1px solid var(--ln)}
+.dvdone{width:100%;padding:12px;background:#ef6f6c!important;color:#fff!important;border:0}
+</style></head><body><div id="app"></div><script>
+const $=i=>document.getElementById(i),app=$('app'),P=['#ee6f8a','#4cc2ae','#6ec6d0','#f0b490','#ef8c7e','#f3c86b','#9b8fd1','#7fb7e6'],
+esc=s=>String(s).replace(/[&<>"]/g,m=>'&#'+m.charCodeAt(0)+';'),uid=()=>Math.random().toString(36).slice(2),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let S={list:[],groups:[],dark:0,snd:1,sort:0,gsort:0},R=null,scr='home',c=0,mode=0,hide=0,dg=0,okf=null;
+try{Object.assign(S,JSON.parse(localStorage.getItem('rl')||'{}'))}catch(e){}
+if(!S.dm2){S.dark=0;S.dm2=1}
+if(!S.sf){S.sort=0;S.sf=1}
+S.list.forEach((r,i)=>{if(!r.cr)r.cr=i+1});
+const PAL=['#ee6f8a','#ef8c7e','#f0b490','#f3c86b','#a7d28a','#4cc2ae','#6ec6d0','#7fb7e6','#9b8fd1','#c58fd0','#e58fb4','#b9a18f'],hx=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),
+near=c=>{if(PAL.includes(c))return c;let a=hx(c),b=1e9,o=PAL[0];PAL.forEach(p=>{let q=hx(p),d=(a[0]-q[0])**2+(a[1]-q[1])**2+(a[2]-q[2])**2;if(d<b){b=d;o=p}});return o};
+let pcI=0;
+try{S.list.forEach(r=>r.wheels.forEach(w=>w.items.forEach(x=>x.c=near(x.c))));S.groups.forEach(g=>g.items.forEach(x=>x.c=near(x.c)))}catch(e){}
+S.list.forEach(r=>r.wheels.forEach(w=>{delete w.cheat;delete w.last;delete w.hid;delete w.arr;delete w.b}));
+const sv=()=>{try{localStorage.setItem('rl',JSON.stringify({...S,list:S.list.filter(r=>!r.temp)}))}catch(e){}};
+const mkI=()=>Array.from({length:6},(_,i)=>({t:''+(i+1),c:P[i],h:0,w:1,o:i})),mkW=()=>({items:mkI(),win:1,rot:0}),
+newR=(name,temp)=>({id:uid(),cr:Date.now(),name,temp,n:1,sec:9,wheels:[mkW()]}),
+auto=(b,ns)=>{let k=1;while(ns.includes(b+k))k++;return b+k},
+uq=(n,ns)=>{let k=2,m=n;while(ns.includes(m))m=n+' ('+k++ +')';return m},
+shuf=a=>{for(let i=a.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}},
+clamp=w=>{w.win=Math.max(1,Math.min(w.win,w.items.filter(x=>!x.h).length||1))},
+find=id=>S.list.find(r=>r.id==id),cp=a=>a.map((x,i)=>({...x,o:i})),
+toast=m=>{let d=document.createElement('div');d.className='tt';d.textContent=m;app.append(d);setTimeout(()=>d.remove(),1800)},
+mod=h=>app.insertAdjacentHTML('beforeend','<div class=m><div class=bx>'+h+'</div></div>'),
+ask=(t,v,ok)=>{mod(`<b>${t}</b><input type=text id=ai value="${esc(v)}"><div class=bt><button data-a=cl>戻る</button><button data-a=ok>OK</button></div>`);okf=ok};
+function wsvg(w){let v=w.items.filter(x=>!x.h),T=v.reduce((s,x)=>s+x.w,0)||1,a=0,s='',L='',cnt=v.length,nw=(R&&R.n)||1;
+const pt=(d,r)=>[100+r*Math.sin(d*Math.PI/180),100-r*Math.cos(d*Math.PI/180)];
+if(!v.length)s='<circle cx=100 cy=100 r=84 fill="#999"/>';
+v.forEach(x=>{let d=x.w/T*360,b=a+d,m=a+d/2;
+if(cnt==1)s+=`<circle class=sec data-ix=${w.items.indexOf(x)} cx=100 cy=100 r=84 fill="${x.c}"/>`;else{s+=`<path class=sec data-ix=${w.items.indexOf(x)} d="M100 100L${pt(a,84)}A84 84 0 ${d>180?1:0} 1 ${pt(b,84)}Z" fill="${x.c}"/>`;let q=pt(a,84),o=pt(a,88);L+=`<line x1=100 y1=100 x2=${q[0]} y2=${q[1]} stroke="#fff" stroke-width=".6"/><circle cx=${o[0]} cy=${o[1]} r=1.8 fill="#9aa5ab"/>`}
+let em=[...x.t].reduce((n,ch)=>n+(ch.charCodeAt(0)>255?1:.6),0)||1,fs=Math.min(11,57/em),Lw,cx,bl=Math.max(0,Math.min(1,Math.max((cnt-6)/10,(em-3)/6,(nw-1)/5)));for(let it=0;it<5;it++){Lw=em*fs;cx=Math.max(Math.min(56+bl*40,80-Lw/2),26+Lw/2);fs=Math.max(3,Math.min(fs,(cx-Lw/2)*d*Math.PI/180*.62))}Lw=em*fs;cx=Math.max(Math.min(56+bl*40,80-Lw/2),26+Lw/2);
+s+=`<text x=${100+cx} y=${100+fs*.35} text-anchor=middle transform="rotate(${m-90} 100 100)" font-size=${fs} fill=#fff>${esc(x.t)}</text>`;a=b});
+let ar='',arr=w.arr&&w.arr.length==w.win?w.arr:null;for(let k=0;k<w.win;k++)ar+=`<polygon points="93,0 107,0 100,17" fill="#fff" stroke="#b8c4c0" stroke-width=".8" transform="rotate(${arr?arr[k]:360*k/w.win} 100 100)"/>`;
+return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><g class=g style="transform-origin:100px 100px;transform:rotate(${w.rot}deg)">${s}<circle cx=100 cy=100 r=88 fill=none stroke="var(--ring)" stroke-width=8 />${L}</g><circle class=cs cx=100 cy=100 r=25 fill="var(--ring)" style="cursor:pointer"/><circle class=cs cx=100 cy=100 r=21 fill="#f6e3c4" style="cursor:pointer"/><text class=cs x=100 y=103 text-anchor=middle font-size=8 font-weight=bold fill="#b9895a" style="cursor:pointer">START</text>${ar}</svg>`}
+function fsOf(out,multi){let n=out.length,E=out.reduce((s,x)=>s+[...x.t].reduce((q,ch)=>q+(ch.charCodeAt(0)>255?1:.55),0),0)||1,W=Math.min(app.clientWidth||360,480)-(multi?150:40),base=multi?15:22,lo=multi?10:12,f=(W*(multi?1:2)-n*(multi?28:40))/E;return Math.max(lo,Math.min(base,f))}
+function showRes(i){let w=R.wheels[i],e=$('res'+i);if(!e)return;let base=scr=='multi'?`${i+1}: `:'';if(!w.last){e.innerHTML=base;return}let fs=fsOf(w.last,scr=='multi');e.innerHTML=base+w.last.map(x=>`<span class=chip style="background:${x.c};font-size:${fs}px;padding:.35em .9em;${w.hid?'opacity:.45':''}">${esc(x.t)}</span>`).join('')+`<button class=eye data-a=rh data-i=${i}>${w.hid?'戻す':'隠す'}</button>`}
+let lt=0,mcs=null,dv={s:0,n:0};
+const chNew=on=>({on,q:[],delay:0,pend:0,act:0,fv:0,ex:0,ph:0,steps:0,p:0,exc:[]});
+function bars(){let b=document.querySelector('.hb'),w=R&&R.wheels[c],ch=(w&&w.cheat)||{},n=(ch.q||[]).length;
+if(b&&scr=='single'){b.classList.toggle('b1',!!ch.on);b.classList.toggle('m1',!!ch.on&&n>0&&n%2==1);b.classList.toggle('m2',!!ch.on&&n>0&&n%2==0);b.classList.toggle('t1',!!((ch.on&&ch.delay)||ch.pend));b.classList.toggle('r1',!!(ch.on&&ch.fv));b.classList.toggle('l1',!!(ch.on&&ch.ex))}
+let sn=document.querySelector('.mi[data-a=snd] .sn');if(sn)sn.style.transform=ch.on&&ch.steps>0?`translateX(${ch.steps%2?1.5:-1.5}px)`:''}
+const chReset=w=>{w.cheat=chNew(0);bars()};
+function bk(){let t=$('ta'),b=$('bk');if(!t||!b)return;let w=R.wheels[c],k=0;b.innerHTML=t.value.split('\n').map(l=>{if(!l.trim())return '<div>&nbsp;</div>';let h=w.items[k++]?.h;return `<div class="${h?'dim':''}">${esc(l)}</div>`}).join('');b.scrollTop=t.scrollTop;b.scrollLeft=t.scrollLeft}
+const draw=i=>{let e=$('w'+i);if(e)e.innerHTML=wsvg(R.wheels[i])};
+let AC=null,tkEnd=0;const ac=()=>{try{AC=AC||new(window.AudioContext||webkitAudioContext)();AC.resume();return AC}catch(e){return null}};
+const tone=(f,t0,d,v,ty)=>{let a=ac();if(!a)return;let o=a.createOscillator(),g=a.createGain();o.type=ty||'sine';o.frequency.value=f;g.gain.setValueAtTime(v,a.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t0+d);o.connect(g);g.connect(a.destination);o.start(a.currentTime+t0);o.stop(a.currentTime+t0+d)};
+const beep=()=>{if(S.snd){tone(523,0,.35,.18);tone(659,.12,.35,.18);tone(784,.24,.6,.2)}};
+const ticks=dur=>{if(!S.snd||Date.now()<tkEnd)return;tkEnd=Date.now()+dur;let k=dur/4000,t=0,d=45;while(t<3900){setTimeout(()=>tone(1500,0,.03,.07,'triangle'),t*k);t+=d;d*=1.085}};
+const conf=(e,out,fs)=>{let k0=Math.max(6,Math.round(16*fs/22)),sz=Math.max(4,Math.min(8,fs*.36));for(let k=0;k<k0;k++){let q=document.createElement('i');q.className='cf';q.style.cssText=`left:${10+Math.random()*80}%;width:${sz}px;height:${sz}px;background:${out[k%out.length].c};--dx:${(Math.random()-.5)*60*fs/22}px;--dy:${Math.max(40,80*fs/22)}px;animation-delay:${Math.random()*.2}s`;e.append(q);setTimeout(()=>q.remove(),1800)}};
+async function spin(i){let w=R.wheels[i];if(w.b||!w.items.some(x=>!x.h))return;w.b=1;let sec=w.sec||R.sec,dur=sec*1000,e=$('res'+i),base=scr=='multi'?`${i+1}: `:'';w.last=null;w.hid=0;showRes(i);
+let fin,ch=w.cheat,fq=null,exc=null;w.arr=null;
+if(ch&&ch.act){if(ch.ex){exc=ch.exc;fq=Array(w.win).fill(null);if(!ch.fv)ch.act=0}
+else if(ch.q.length){if(ch.fv){let L=ch.q.length;fq=[];for(let k=0;k<w.win;k++)fq.push(ch.q[(ch.p+k)%L]);ch.p=(ch.p+w.win)%L}else{fq=ch.q.splice(0,w.win);if(!ch.q.length)ch.act=0}}}
+if(w.win>1){shuf(w.items);w.rot=0;fin=1800+Math.random()*360}
+let v0=w.items.filter(x=>!x.h);
+if(fq||(w.win>1&&v0.some(x=>x.w>=2))){let T0=v0.reduce((s,x)=>s+x.w,0),st=[],a0=0;v0.forEach(x=>{st.push([a0,x.w/T0*360]);a0+=x.w/T0*360});
+const an=x=>{let q=st[v0.indexOf(x)];return q[0]+q[1]*(.1+Math.random()*.8)};
+if(fq){let used=[],xs=[];for(let k=0;k<w.win;k++){let e0=fq[k],x=e0&&v0.includes(e0)?e0:null;if(!x){let el=exc?v0.filter(y=>!exc.includes(y)):v0;if(!el.length)el=v0;let pl=el.filter(y=>!used.includes(y));if(!pl.length)pl=el;x=pl[Math.random()*pl.length|0]}used.push(x);xs.push(x)}
+if(w.win==1)fin=360*Math.ceil((w.rot+1800)/360)-an(xs[0]);else w.arr=xs.map(x=>(an(x)+fin)%360)}
+else{let ids=v0.map((_,k)=>k);shuf(ids);w.arr=ids.slice(0,w.win).map(k=>(st[k][0]+st[k][1]*(.1+Math.random()*.8)+fin)%360)}}
+if(w.win>1)draw(i)
+let g=document.querySelector('#w'+i+' .g');if(g){g.getBoundingClientRect();w.rot=fin!=null?fin:w.rot+1800+Math.random()*360;ticks(dur);g.style.transition=`transform ${sec}s cubic-bezier(.1,.7,.1,1)`;g.style.transform=`rotate(${w.rot}deg)`}
+await sleep(dur+100);let v=w.items.filter(x=>!x.h),T=v.reduce((s,x)=>s+x.w,0),out=[];
+for(let k=0;k<w.win;k++){let ar2=w.arr&&w.arr.length==w.win?w.arr:null,ang=(((ar2?ar2[k]:360*k/w.win)-w.rot)%360+360)%360,acc=0;for(let x of v){acc+=x.w/T*360;if(ang<acc){out.push(x);break}}}
+w.b=0;beep();w.last=out;showRes(i);e=$('res'+i);if(e&&scr=='single')conf(e,out,fsOf(out,0))}
+function swipe(root){root.querySelectorAll('.row').forEach(r=>{let x0=0;r.onpointerdown=e=>{x0=e.clientX;dg=0};
+r.onpointerup=e=>{let d=e.clientX-x0,s=r.dataset.s||'';dg=Math.abs(d)>12;if(d<-40)r.dataset.s=s=='r'?'':'l';else if(d>40)r.dataset.s=s=='l'?'':'r'}})}
+function dragInit(){document.querySelectorAll('.dh').forEach(h=>{h.onclick=e=>e.stopPropagation();h.onpointerdown=e=>{e.preventDefault();let row=h.closest('.row'),rows=[...app.querySelectorAll('.ls .row')],y0=e.clientY,i0=rows.indexOf(row),hs=rows.length>1?rows[1].offsetTop-rows[0].offsetTop:row.offsetHeight;h.setPointerCapture(e.pointerId);row.style.zIndex=5;row.style.opacity=.85;
+h.onpointermove=ev=>{row.style.transition='none';row.querySelector('.ct').style.transition='none';row.style.transform=`translateY(${ev.clientY-y0}px)`};
+h.onpointerup=ev=>{h.onpointermove=h.onpointerup=null;let j=Math.max(0,Math.min(rows.length-1,i0+Math.round((ev.clientY-y0)/hs)));if(j!=i0){let it=S.list.splice(i0,1)[0];S.list.splice(j,0,it)}render()}}})}
+const sorted=()=>{let l=[...S.list],m=S.sort;if(m==1)l.sort((a,b)=>a.cr-b.cr);if(m==2)l.sort((a,b)=>a.name.localeCompare(b.name));if(m==3)l.sort((a,b)=>b.cr-a.cr);return l},
+SN=['自由','作成順','名前順','新しい順'],SG=['作成順','名前順','新しい順'];
+const MAN=`<div class=cd2><h3>入り方・終わり方</h3>ルーレット画面の<b>当選数とスタートの間</b>を2回タップで開始、1回タップで決定。三本線の枠では<b>＋とシャッフルの間</b>が同じ役目です。</div>
+<div class=cd2><h3>押す場所と効果</h3><table><tr><th>効果</th><th>ルーレット画面</th><th>三本線の枠</th></tr><tr><td>選択</td><td>アイテム</td><td>色ボタン</td></tr><tr><td>ランダム</td><td>当選数＋</td><td>＋</td></tr><tr><td>後で効く</td><td>当選数－</td><td>シャッフル</td></tr><tr><td>ずっと</td><td>右下スタート</td><td>「項目」</td></tr><tr><td>以外</td><td>中央のSTART</td><td>「ホーム」</td></tr></table></div>
+<div class=cd2><h3>手順</h3>起動→後で効く→ずっと→数字かランダム→以外→終了。工程は飛ばせますが、順番違い・重複・別の場所のタップはリセットされます。</div>
+<div class=cd2><h3>後で効く</h3>終了後はランダムのまま。通常画面で当選数の－を押すと次の回から有効です（当選数は減りません）。待機中は三本線の一番上の線が上がったままです。</div>
+<div class=cd2><h3>三本線の合図</h3>下の線が下＝モード中／真ん中の線が上下交互＝選択のたび／上の線が上＝後で効く／下の線が右＝ずっと／上の線が左＝以外。枠の中では、サウンドの「ON」「OFF」の文字が左右に動きます。</div>
+<div class=cd2><h3>複数ルーレットの一覧</h3>ホームと保存の間を2回タップ→<b>ホーム</b>（後で効くを発動）か<b>保存</b>（無効化）→対象を選ぶ（未選択なら全部）→1回タップで完了。</div>
+<div class=cd2><h3>注意</h3>当選数が2以上なら、当選数ぶんの指定を1回で使い、足りない分はランダム。モードに入り直すとリセット。記録は保存されず、アプリを閉じると消えます。</div>`;
+const V={
+dev(){app.innerHTML=`<div class=hd><b>ディベロッパーモード</b></div><hr><div class="ls mn">${MAN}<div class=r><span>イカサマモード</span><button data-a=dvt>${S.dev===0?'OFF':'ON'}</button></div><div style="padding:8px 12px 20px"><button data-a=dvd class=dvdone>完了</button></div></div>`},
+home(){app.innerHTML=`<div class=hd><b data-a=ttl>ホーム</b></div><hr><div class=bar><button data-a=add>＋</button><button data-a=srt>並び替え（${SN[S.sort]}）</button></div><div class=ls>`+sorted().map(r=>`<div class=row><div class="ac a-r"><button data-a=edit data-i="${r.id}">編集</button></div><div class="ac a-l"><button data-a=dup data-i="${r.id}">複製</button><button class=red data-a=del data-i="${r.id}">削除</button></div><div class=ct data-a=open data-i="${r.id}">${esc(r.name)}${r.temp?' <small>一時</small>':''}${S.sort==0?`<span class=dh data-i="${r.id}">≡</span>`:''}</div></div>`).join('')+'</div>';swipe(app);dragInit()},
+single(){let w=R.wheels[c];app.innerHTML=`<div class=hd><button data-a=menu class=hb><i></i><i></i><i></i></button>${R.n>1?'<button data-a=tomulti>⇨</button>':''}</div><div class=wc id=w${c}></div><div class=res id=res${c}></div><hr><div class=ft><span class=st><button data-a=wm>－</button><b>${w.win}</b><button data-a=wp>＋</button></span><div class=mid data-a=cmid></div><button class=go data-a=go>スタート</button></div>`;draw(c);showRes(c);bars()},
+multi(){app.innerHTML=`<div class=hd><button data-a=home>ホーム</button><div class=mid data-a=mmid></div><button data-a=msave>保存</button></div><hr><div class=bar><span>全てのルーレットを回す</span><button data-a=mm>${mode?'一回ずつ':'一度に'}</button><button class=go data-a=goall>スタート</button></div><div>${R.wheels.slice(0,R.n).map((_,i)=>`<div class=r style="padding:2px 12px" id=res${i}>${i+1}: </div>`).join('')}</div><hr><div class=grid>${R.wheels.slice(0,R.n).map((_,i)=>`<div class=cd><div id=w${i} data-a=ew data-i=${i}></div><hr><button data-a=go1 data-i=${i}>スタート</button></div>`).join('')}</div>`;R.wheels.slice(0,R.n).forEach((_,i)=>{draw(i);showRes(i)})},
+set(){let w=R.wheels[c];app.innerHTML=`<div class=hd><b>基本設定</b><button data-a=back>戻る</button></div><hr>
+<div class=r>ルーレット数<span class=st><button data-a=nm>－</button><b>${R.n}</b><button data-a=np>＋</button></span></div>
+<div class=r>ダークモード<button data-a=dk>${S.dark?'ON':'OFF'}</button></div>
+<div class=r>結果が表示されるまでの秒数<span class=st><button data-a=sm>－</button><b>${w.sec||R.sec}</b><button data-a=sp>＋</button></span></div>
+<div class=r>このルーレットを保存<button data-a=svr ${R.temp?'':'disabled'}>保存</button></div>
+<div class=tb>${hide?'<button data-a=hrs>リセット</button><span style=flex:1></span><button data-a=hok>決定</button>':'<button data-a=hide>非表示</button><button data-a=rst>リセット</button><button data-a=shf>シャッフル</button><button data-a=ld>読み込み</button><button data-a=sg>保存</button>'}</div>`+
+(hide?`<div class="ls fr">${w.items.map((x,i)=>`<label class=hl><input type=checkbox data-i=${i} ${x.h?'checked':''}><span class="${x.h?'dim':''}">${esc(x.t)}</span></label>`).join('')}</div>`:`<div class=ew><div id=bk></div><textarea id=ta wrap=off spellcheck=false>${esc(w.items.map(x=>x.t).join('\n'))}</textarea></div>`);bk()}};
+function render(){if(scr!='multi')mcs=null;if(scr=='home')S.list=S.list.filter(r=>!r.temp);V[scr]();document.documentElement.toggleAttribute('data-d',!!S.dark);sv()}
+function sync(){let w=R.wheels[c],o=w.items,l=$('ta').value.split('\n').filter(x=>x.trim());w.last=null;w.hid=0;w.items=l.map((t,i)=>{let x=o[i];if(x){x.t=t;return x}return{c:P[i%8],h:0,w:1,t,o:100+i}});clamp(w)}
+function menu(k){let w=R.wheels[c],h=`<div class=dw><div class=mi data-a=home>ホーム</div><hr><div class=mi data-a=bs>基本設定</div><hr><div class=mi data-a=snd>サウンド <span class=sn style="display:inline-block">${S.snd?'ON':'OFF'}</span></div><hr><div class=mi data-a=img>画像として保存</div><hr><div class=mi data-a=delr>このルーレットを削除</div><hr><div class=mi data-a=fv><b>項目</b></div><hr><div class=il>`+w.items.map((x,i)=>`<div class=row style="--lw:100px;--rw:150px"><div class="ac a-r"><button data-a=ie data-i=${i}>編集</button><span class=sp2><button data-a=wd data-i=${i}>－</button><b>${x.w}</b><button data-a=wu data-i=${i}>＋</button></span></div><div class="ac a-l"><button data-a=ih data-i=${i}>${x.h?'表示':'非表示'}</button><button class=red data-a=idl data-i=${i}>削除</button></div><div class=ct><button class=cl data-a=pc data-i=${i} style="background:${x.c}"></button><span class="${x.h?'dim':''}">${esc(x.t)}</span></div></div>`).join('')+`</div><div class=df><button data-a=ia>＋</button><div class=mid data-a=cmid></div><button data-a=ish>シャッフル</button></div></div>`,d=$('bd'),l0=document.querySelector('.il'),st=l0?l0.scrollTop:0,ss=[...document.querySelectorAll('#bd .row')].map(x=>x.dataset.s||'');
+if(d)d.innerHTML=h;else app.insertAdjacentHTML('beforeend','<div class=bd id=bd>'+h+'</div>');swipe($('bd'));
+if(d){document.querySelector('.il').scrollTop=st;if(k)document.querySelectorAll('#bd .row').forEach((x,i)=>{if(ss[i])x.dataset.s=ss[i]})}}
+const ref=k=>{menu(k);draw(c)};
+const saveTemp=()=>ask('ルーレット名を決めて保存',R.name,v=>{v=v.trim();let ns=S.list.filter(x=>x!==R).map(x=>x.name);R.name=v?uq(v,ns):auto('ルーレット',ns);R.temp=0;toast('保存しました');render()});
+const act={
+cl(){let m=app.querySelectorAll('.m');m[m.length-1]?.remove()},clAll(){app.querySelectorAll('.m').forEach(m=>m.remove())},
+ok(){let v=$('ai').value;act.cl();okf(v)},
+add(){mod(`<b>新規作成</b><hr><div class=mi data-a=m0>通常モード<br><small>このモードで作成したルーレットはアプリを閉じても自動的に保存されます</small></div><hr><div class=mi data-a=m1>一時モード<br><small>このモードは作成したルーレットはアプリを閉じれば履歴には残らず自動的に削除されます</small></div>`)},
+m0(){act.clAll();mod(`<b>新規作成</b><input type=text id=ai placeholder="ルーレット名"><div class=bt><button data-a=cl>戻る</button><button data-a=mk data-i=0>作成</button></div>`)},
+m1(){act.clAll();R=newR(auto('ルーレット',S.list.map(r=>r.name)),1);S.list.push(R);c=0;scr='single';render()},
+mk(t){let n=$('ai').value.trim(),ns=S.list.map(r=>r.name);R=newR(n?uq(n,ns):auto('ルーレット',ns),+t);S.list.push(R);c=0;scr='single';act.clAll();render()},
+srt(){S.sort=(S.sort+1)%4;render()},
+open(id){R=find(id);c=0;scr=R.n>1?'multi':'single';render()},
+edit(id){let r=find(id);ask('名前を変更',r.name,v=>{v=v.trim();if(v)r.name=uq(v,S.list.filter(x=>x!==r).map(x=>x.name));render()})},
+dup(id){let r=find(id),d=JSON.parse(JSON.stringify(r));d.id=uid();d.cr=Date.now();d.name=uq(r.name+'のコピー',S.list.map(x=>x.name));S.list.push(d);render()},
+del(id){S.list=S.list.filter(r=>r.id!=id);render()},
+home(){scr='home';render()},menu(){menu();bars()},tomulti(){scr='multi';render()},ew(i){c=+i;scr='single';render()},
+wm(){let w=R.wheels[c],ch=w.cheat;if(ch&&ch.pend){ch.pend=0;ch.act=(ch.ex?ch.exc.length:ch.q.length)?1:0;bars();return}w.win--;clamp(w);draw(c);document.querySelector('.st b').textContent=w.win},
+wp(){let w=R.wheels[c];w.win++;clamp(w);draw(c);document.querySelector('.st b').textContent=w.win},
+go(){spin(c)},
+mmid(){let n=Date.now();if(n-lt<450){lt=0;mcs={a:null,sel:[]}}else lt=n},
+cmid(){let w=R.wheels[c],n=Date.now();if(n-lt<450){lt=0;w.cheat=chNew(1);bars()}else lt=n},go1(i){spin(+i)},
+async goall(){let n=R.n;if(mode){for(let i=0;i<n;i++)await spin(i)}else await Promise.all(R.wheels.slice(0,n).map((_,i)=>spin(i)))},
+mm(){mode^=1;render()},msave(){if(R.temp)saveTemp();else toast('保存済みです')},
+bs(){scr='set';render()},back(){scr=R.n>1?'multi':'single';render()},
+snd(){S.snd^=1;menu();sv()},
+delr(){S.list=S.list.filter(x=>x!==R);scr='home';render()},
+img(){try{let s=wsvg(R.wheels[c]).replace('<svg ','<svg width="800" height="800" ').replace(/var\(--fg\)/g,'#000').replace(/var\(--bg\)/g,'#fff'),im=new Image();im.onload=()=>{let k=document.createElement('canvas');k.width=k.height=800;let x=k.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,800,800);x.drawImage(im,0,0,800,800);let a=document.createElement('a');a.href=k.toDataURL();a.download=R.name+'.png';a.click()};im.src='data:image/svg+xml;utf8,'+encodeURIComponent(s)}catch(e){toast('保存できませんでした')}},
+pc(i){pcI=+i;let cur=R.wheels[c].items[pcI].c;mod(`<b>色を選択</b><div class=sw>${PAL.map(p=>`<button class="swb${p==cur?' on':''}" data-a=pk data-i="${p}" style="background:${p}"></button>`).join('')}</div><div class=bt><button data-a=cl>戻る</button></div>`)},
+pk(p){R.wheels[c].items[pcI].c=p;act.cl();ref(1)},
+ie(i){let x=R.wheels[c].items[i];ask('項目名を編集',x.t,v=>{if(v.trim())x.t=v.trim();ref()})},
+ih(i){let w=R.wheels[c];w.items[i].h^=1;clamp(w);ref()},
+idl(i){let w=R.wheels[c];if(w.items.length>1){w.items.splice(i,1);clamp(w);ref()}},
+wd(i){let x=R.wheels[c].items[i];x.w=Math.max(1,x.w-1);ref(1)},wu(i){let x=R.wheels[c].items[i];x.w=Math.min(99,x.w+1);ref(1)},
+ia(){let w=R.wheels[c],n=w.items.length;ask('アイテム名を編集','アイテム'+(n+1),v=>{v=v.trim()||'アイテム'+(n+1);w.items.push({t:v,c:P[n%8],h:0,w:1,o:Math.max(...w.items.map(x=>x.o))+1});ref();let l=document.querySelector('.il');l.scrollTop=l.scrollHeight})},
+ish(){let w=R.wheels[c];shuf(w.items);w.rot=0;ref()},
+nm(){R.n=Math.max(1,R.n-1);render()},np(){R.n=Math.min(12,R.n+1);while(R.wheels.length<R.n)R.wheels.push(mkW());render()},
+dk(){S.dark^=1;render()},sm(){let w=R.wheels[c];w.sec=Math.max(1,(w.sec||R.sec)-1);render()},sp(){let w=R.wheels[c];w.sec=Math.min(60,(w.sec||R.sec)+1);render()},fv(){},dvt(){S.dev=S.dev===0?1:0;render()},dvd(){scr='home';render()},
+wsm(i){let x=R.wheels[+i];x.sec=Math.max(1,(x.sec||R.sec)-1);render()},wsp(i){let x=R.wheels[+i];x.sec=Math.min(60,(x.sec||R.sec)+1);render()},
+svr(){saveTemp()},
+hide(){hide=1;render()},hok(){hide=0;clamp(R.wheels[c]);render()},hrs(){R.wheels[c].items.forEach(x=>x.h=0);render()},
+rst(){R.wheels[c].items.sort((a,b)=>a.o-b.o);render()},shf(){shuf(R.wheels[c].items);render()},
+rh(i){let w=R.wheels[+i];if(!w.last)return;let hv=w.items.filter(x=>!x.h).length;
+if(!w.hid){if(w.last.length>=hv){toast('全て非表示にはできません');return}w.last.forEach(x=>x.h=1)}else w.last.forEach(x=>x.h=0);
+w.hid^=1;clamp(w);w.arr=null;draw(+i);showRes(+i)},
+sg(){mod(`<b>保存</b><input type=text id=ai placeholder="グループ名"><div class=bt><button data-a=cl>戻る</button><button data-a=gs>保存</button></div>`)},
+gs(){let n=$('ai').value.trim(),ns=S.groups.map(g=>g.name);S.groups.push({name:n?uq(n,ns):auto('グループ',ns),items:cp(R.wheels[c].items)});act.cl();sv();toast('保存しました')},
+ld(){let ix=S.groups.map((_,i)=>i);if(S.gsort==1)ix.sort((a,b)=>S.groups[a].name.localeCompare(S.groups[b].name));if(S.gsort==2)ix.reverse();
+app.insertAdjacentHTML('beforeend',`<div class="m f"><div class=hd><b>読み込み</b><button data-a=gsrt>並び替え（${SG[S.gsort]}）</button></div><hr><div class=bx>${ix.map(i=>`<div class=gc data-a=gp data-i=${i}><b>${esc(S.groups[i].name)}</b><div>${S.groups[i].items.length}件：${esc(S.groups[i].items.map(x=>x.t).join('、'))}</div></div>`).join('')||'<small>保存したグループはありません</small>'}</div><div class=fb><button data-a=cl>戻る</button></div></div>`)},
+gsrt(){S.gsort=(S.gsort+1)%3;act.cl();act.ld()},
+gp(i){let g=S.groups[i];mod(`<div class=mi data-a=gu data-i=${i}>「${esc(g.name)}」を使う</div><hr><div class=mi data-a=ga data-i=${i}>＋今のアイテムに追加</div><hr><div class=mi data-a=gn data-i=${i}>上書きして新規作成</div><div class=bt><button data-a=cl>戻る</button></div>`)},
+gu(i){R.wheels[c].items=cp(S.groups[i].items);clamp(R.wheels[c]);act.clAll();render()},
+ga(i){let w=R.wheels[c];w.items=cp(w.items.concat(JSON.parse(JSON.stringify(S.groups[i].items))));act.clAll();render()},
+gn(i){let g=S.groups[i];R=newR(uq(g.name,S.list.map(r=>r.name)),0);R.wheels[0].items=cp(JSON.parse(JSON.stringify(g.items)));clamp(R.wheels[0]);S.list.push(R);c=0;scr='single';act.clAll();render()}};
+app.onclick=e=>{if(dg){dg=0;return}
+if(scr=='home'){let a0=e.target.closest('[data-a]'),k0=a0&&a0.dataset.a;if(k0=='ttl'){if(dv.s==0){dv.n++;if(dv.n==3)dv.s=1}else dv={s:0,n:1};return}if(k0=='srt'&&dv.s==1){dv.s=2;return}if(k0=='add'&&dv.s==2){dv={s:0,n:0};scr='dev';render();return}dv={s:0,n:0}}
+if(scr=='multi'&&mcs){let t=e.target,a=t.closest('[data-a]'),k=a&&a.dataset.a;
+if(k=='mmid'){if(mcs.a){let tg=mcs.sel.length?mcs.sel:R.wheels.slice(0,R.n).map((_,i)=>i);tg.forEach(i=>{let w=R.wheels[i],ch=w.cheat;if(mcs.a=='arm'){if(ch&&ch.pend){ch.pend=0;ch.act=(ch.ex?ch.exc.length:ch.q.length)?1:0}}else w.cheat=chNew(0)})}mcs=null;return}
+if(k=='home'&&!mcs.a&&!mcs.sel.length){mcs.a='arm';return}
+if(k=='msave'&&!mcs.a&&!mcs.sel.length){mcs.a='cancel';return}
+if(k=='ew'&&mcs.a){let i=+a.dataset.i,j=mcs.sel.indexOf(i);if(j<0)mcs.sel.push(i);else mcs.sel.splice(j,1);return}
+mcs=null}
+if(scr=='single'&&R){let w=R.wheels[c],ch=w.cheat;if(ch&&ch.on){let t=e.target,sc=t.closest('.sec'),a=t.closest('[data-a]'),k=a&&a.dataset.a,ty=null,it=null;
+if(sc){ty='i';it=w.items[+sc.dataset.ix]}else if(k=='wp'||k=='ia')ty='i';else if(k=='pc'){ty='i';it=w.items[+a.dataset.i]}
+else if(k=='wm'||k=='ish')ty='d';else if(k=='go'||k=='fv')ty='f';else if(t.closest('.cs')||k=='home')ty='x';
+if(k=='cmid'){ch.on=0;ch.steps=0;if(ch.ex)ch.exc=[...new Set(ch.q.filter(Boolean))];let has=ch.ex?ch.exc.length:ch.q.length;if(ch.delay)ch.pend=1;else ch.act=has?1:0;ch.delay=0;ch.p=0;bars();return}
+if(ty){let ok=1;
+if(ty=='d'){if(ch.ph==0){ch.delay=1;ch.ph=1}else if(ch.ph==1){ch.delay=0;ch.ph=0}else ok=0}
+else if(ty=='f'){if(ch.ph<=1){ch.fv=1;ch.ph=2}else ok=0}
+else if(ty=='i'){if(ch.ph<=3){ch.q.push(it);ch.ph=3}else ok=0}
+else if(ty=='x'){if(ch.ph==3&&ch.q.some(Boolean)){ch.ex=1;ch.ph=4}else ok=0}
+if(ok){ch.steps++;bars();return}}
+chReset(w)}}let t=e.target,cs=t.closest('.cs');if(cs){let h=cs.closest('[id^=w]');if(h)spin(+h.id.slice(1));return}if(t.classList.contains('bd')){t.remove();bars();return}if(scr=='set'&&$('ta'))sync();let a=t.closest('[data-a]');if(a&&act[a.dataset.a])act[a.dataset.a](a.dataset.i)};
+app.oninput=e=>{if(e.target.id=='ta'){sync();bk()}};app.addEventListener('scroll',e=>{if(e.target.id=='ta'){$('bk').scrollTop=e.target.scrollTop;$('bk').scrollLeft=e.target.scrollLeft}},true);
+app.onchange=e=>{let t=e.target,w=R&&R.wheels[c];if(t.classList.contains('cl')){w.items[t.dataset.i].c=t.value;draw(c)}else if(t.type=='checkbox'){w.items[t.dataset.i].h=t.checked?1:0;t.nextElementSibling.className=t.checked?'dim':''}};
+R=newR(auto('ルーレット',S.list.map(r=>r.name)),1);S.list.push(R);scr='single';render();
+function intro(){let src=document.querySelector('#w0 svg');if(!src||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+let rc=src.getBoundingClientRect(),ap=app.getBoundingClientRect(),L=rc.left-ap.left,T=rc.top-ap.top,W=rc.width,H=rc.height,cx=L+W/2,cy=T+H/2,
+ov=document.createElement('div');ov.style.cssText='position:absolute;inset:0;background:var(--bg);z-index:30;overflow:hidden';
+let cl=src.cloneNode(true);cl.querySelectorAll('text').forEach(t=>t.remove());cl.querySelectorAll('circle.cs')[1].setAttribute('fill','var(--bg)');cl.style.cssText=`position:absolute;left:${L}px;top:${T}px;width:${W}px;height:${H}px;transform:scale(.5);`;
+let sw=W*.24,sh=H*.12,sT=cy+H*.23-7,st=document.createElement('div');
+st.style.cssText=`position:absolute;left:${cx-sw/2}px;top:${sT}px;width:${sw}px;height:${sh}px;background:linear-gradient(#d8c3a5,#a88f72);clip-path:polygon(26% 0,74% 0,100% 100%,0 100%)`;
+ov.append(st,cl);app.append(ov);let skip=0;ov.onclick=()=>{skip=1;ov.remove()};
+const cp=x=>Math.max(0,Math.min(1,x)),t0=performance.now(),S=Math.hypot(ap.width,ap.height)/(W*21/200)*1.1;
+function m(d){cl.style.webkitMaskImage=cl.style.maskImage=`conic-gradient(#000 ${d}deg,transparent 0)`}m(0);
+function f(now){if(skip)return;let t=now-t0,p1=cp(t/700),b=1-Math.pow(1-p1,3)*Math.cos(p1*6),p2=cp((t-700)/1100),p3=cp((t-1800)/1100),p4=cp((t-2900)/400);
+st.style.transform=`translateY(${(b-1)*(sT+sh)}px)`;st.style.opacity=1-p3*2>0?1-p3*2:0;m(360*p2);
+cl.style.transform=`scale(${.5*Math.pow(S/.5,p3*p3)})`;if(p2>=1)cl.style.webkitMaskImage=cl.style.maskImage='none';
+ov.style.opacity=1-p4;
+if(t<3300)requestAnimationFrame(f);else ov.remove()}
+requestAnimationFrame(f)}
+requestAnimationFrame(intro);
+</script></body></html>
